@@ -25,6 +25,8 @@ public class Event {
     @Column(name = "duration", nullable = false)
     private Integer duration;
 
+    // for now, an event that is importance level 5 for one user is importance level
+    // 5 for all users
     @Column(name = "importance", nullable = false)
     private Integer importance;
 

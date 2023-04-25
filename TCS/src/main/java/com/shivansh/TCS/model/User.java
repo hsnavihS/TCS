@@ -26,6 +26,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "phone")
+    private Long phone;
+
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
@@ -38,11 +41,12 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password, UserRole role) {
+    public User(String name, String email, String password, UserRole role, Long phone) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.phone = phone;
     }
 
     // getters and setters
@@ -69,6 +73,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Long getPhone() {
+        return phone;
+    }
+
+    public Long setPhone(Long phone) {
+        return this.phone = phone;
     }
 
     public UserRole getRole() {
