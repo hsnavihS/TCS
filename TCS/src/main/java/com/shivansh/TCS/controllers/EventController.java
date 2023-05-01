@@ -67,7 +67,7 @@ public class EventController {
             Integer importance = (Integer) Body.get("importance");
 
             List<Integer> tempPeople = (List<Integer>) Body.get("people");
-            // convert tempPeople to List<Long>
+
             List<Long> people = new ArrayList<>();
             for (Integer i : tempPeople) {
                 people.add(i.longValue());
@@ -79,40 +79,28 @@ public class EventController {
             Integer tempRoom = (Integer) Body.get("room");
             Long room = tempRoom.longValue();
 
-            Event event = new Event(numPeople, duration, importance, dateTime);
+            for (Long id : people) {
+                Optional<User> user = userRepository.findById(id);
+                if (user.isPresent()) {
+                    members.add(user.get());
+                } else {
+                    return new ResponseEntity<>("User with id " + id + " not found",
+                            HttpStatus.NOT_FOUND);
+                }
+            }
 
-            System.out.println("Created Event object");
+            Optional<Room> roomObj = roomRepository.findById(room);
+            if (roomObj.isPresent()) {
+                rooms.add(roomObj.get());
+            } else {
+                return new ResponseEntity<>("Room with id " + room + " not found",
+                        HttpStatus.NOT_FOUND);
+            }
 
-            // for (Long id : people) {
-            // System.out.println("Adding user with id " + id);
-            // Optional<User> user = userRepository.findById(id);
-            // if (user.isPresent()) {
-            // members.add(user.get());
-            // } else {
-            // return new ResponseEntity<>("User with id " + id + " not found",
-            // HttpStatus.NOT_FOUND);
-            // }
-            // }
-
-            // event.setPeople(members);
-
-            // System.out.println("People added");
-
-            // Optional<Room> roomObj = roomRepository.findById(room);
-            // if (roomObj.isPresent()) {
-            // rooms.add(roomObj.get());
-            // } else {
-            // return new ResponseEntity<>("Room with id " + room + " not found",
-            // HttpStatus.NOT_FOUND);
-            // }
-
-            // event.setRooms(rooms);
-
-            // System.out.println("Room added");
+            Event event = new Event(dateTime, numPeople, duration, importance, members, rooms);
 
             eventRepository.save(event);
 
-            System.out.println("Event saved");
             return new ResponseEntity<>(event, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error creating event: " + e, HttpStatus.BAD_REQUEST);
@@ -231,10 +219,62 @@ public class EventController {
     @GetMapping("/all")
     public ResponseEntity<Object> getAllEvents() {
         try {
-            List<Event> events = eventRepository.findAll();
+            List<Event> events = new ArrayList<Event>();
+            eventRepository.findAll().forEach(events::add);
             return new ResponseEntity<>(events, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error getting events: " + e, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // this method returns an event details by ID
+    /*
+     * GET /events/{id}
+     * 
+     * Response body:
+     * {
+     * "id": 1,
+     * "numPeople": 5,
+     * "duration": 2,
+     * "importance": 5,
+     * "datetime": "2021-04-20T12:00:00.000+00:00",
+     * "room": {
+     * "id": 1,
+     * "name": "Room 1",
+     * "capacity": 5,
+     * "location": "Location 1"
+     * },
+     * "people": [
+     * {
+     * "id": 1,
+     * "name": "User 1",
+     * "email": "
+     * 
+     * @gmail.com",
+     * "role": "ADMIN"
+     * },
+     * {
+     * "id": 2,
+     * "name": "User 2",
+     * "email": "
+     * 
+     * @gmail.com",
+     * "role": "USER"
+     * }
+     * ]
+     * }
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getEventById(@PathVariable Long id) {
+        try {
+            Optional<Event> event = eventRepository.findById(id);
+            if (event.isPresent()) {
+                return new ResponseEntity<>(event, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Event with id " + id + " not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error getting event: " + e, HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -48,6 +48,16 @@ public class Event {
         this.importance = importance;
     }
 
+    public Event(Date dateTime, Integer numPeople, Integer duration, Integer importance, List<User> people,
+            List<Room> rooms) {
+        this.dateTime = dateTime;
+        this.numPeople = numPeople;
+        this.duration = duration;
+        this.importance = importance;
+        this.people = people;
+        this.rooms = rooms;
+    }
+
     // getters and setters
 
     public Long getId() {
