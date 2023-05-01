@@ -110,7 +110,7 @@ public class EventController {
 
             // System.out.println("Room added");
 
-            // eventRepository.save(event);
+            eventRepository.save(event);
 
             System.out.println("Event saved");
             return new ResponseEntity<>(event, HttpStatus.OK);
