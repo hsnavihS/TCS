@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shivansh.TCS.mail.*;
 import com.shivansh.TCS.model.*;
 import com.shivansh.TCS.password.*;
-import com.shivansh.TCS.enums.UserRole;
 import com.shivansh.TCS.repository.*;
 
 @CrossOrigin
@@ -170,7 +169,8 @@ public class UserController {
      * "name": "Ansh Goyal",
      * "email": "email@gmail.com"
      * "password": "password",
-     * "phone": 9876543210
+     * "phone": 9876543210,
+     * "role": "STUDENT" (or "FACULTY")
      * }
      * 
      * Response Body:
@@ -193,7 +193,7 @@ public class UserController {
             String encodedPass = MD5.getMd5(user.getPassword());
 
             User _user = userRepository.save(
-                    new User(user.getName(), user.getEmail(), encodedPass, UserRole.STUDENT, user.getPhone()));
+                    new User(user.getName(), user.getEmail(), encodedPass, user.getRole(), user.getPhone()));
 
             _user.setPassword(null);
 

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface RoomRepository extends JpaRepository<Room, Long> {
     public Optional<Room> findById(Long id);
 
+    public void deleteById(Long id);
+
     // public List<Room> findAllRooms();
 
     // public List<Room> findByCapacity(Integer capacity);

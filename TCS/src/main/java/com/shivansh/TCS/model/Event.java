@@ -30,10 +30,10 @@ public class Event {
     @Column(name = "importance", nullable = false)
     private Integer importance;
 
-    @ManyToMany(mappedBy = "events")
+    @ManyToMany(mappedBy = "events", cascade = { CascadeType.REMOVE })
     List<User> people;
 
-    @ManyToMany(mappedBy = "events")
+    @ManyToMany(mappedBy = "events", cascade = { CascadeType.REMOVE })
     List<Room> rooms;
 
     // constructors
@@ -41,8 +41,8 @@ public class Event {
     public Event() {
     }
 
-    public Event(Integer numPeople, Integer duration, Integer importance) {
-        this.dateTime = new Date();
+    public Event(Integer numPeople, Integer duration, Integer importance, Date dateTime) {
+        this.dateTime = dateTime;
         this.numPeople = numPeople;
         this.duration = duration;
         this.importance = importance;
@@ -134,5 +134,10 @@ public class Event {
             room.getEvents().remove(this);
         }
         rooms.clear();
+    }
+
+    public void addRoom(Room room) {
+        rooms.add(room);
+        room.getEvents().add(this);
     }
 }
