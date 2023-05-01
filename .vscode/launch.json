@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TcsApplication<TCS>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.shivansh.TCS.TcsApplication",
+            "projectName": "TCS",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

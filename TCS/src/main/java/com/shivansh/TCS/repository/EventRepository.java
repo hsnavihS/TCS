@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    public List<Event> findByUser(User user);
+    // public List<Event> findByUser(User user);
 
-    public List<Event> findByRoom(Room room);
+    // public List<Event> findByRoom(Room room);
 
     public Optional<Event> findById(Long id);
 

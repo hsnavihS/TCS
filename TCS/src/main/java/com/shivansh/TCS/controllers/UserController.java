@@ -31,11 +31,11 @@ public class UserController {
     @Autowired
     EmailService emailService;
 
-    @Autowired
-    EventRepository eventRepository;
+    // @Autowired
+    // EventRepository eventRepository;
 
-    @Autowired
-    RoomRepository roomRepository;
+    // @Autowired
+    // RoomRepository roomRepository;
 
     // This method returns all the users in the database
     /*
@@ -230,8 +230,8 @@ public class UserController {
      * 
      * Request Body:
      * {
-     * "email": "
-     * "password": "
+     * "email": "shuklashivansh@gmail.com",
+     * "password": "password"
      * }
      * 
      * Response Body:
