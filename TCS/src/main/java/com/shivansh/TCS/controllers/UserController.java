@@ -346,4 +346,50 @@ public class UserController {
         }
     }
 
+    // this method resets a user's password
+    /*
+     * POST /users/resetPassword
+     * Returns a user by email
+     * 
+     * @return User - The user with the given email
+     * 
+     * @throws 404 - If the user does not exist
+     * 
+     * @throws 500 - If there is an error in the database
+     * 
+     * @param email (String) - The email of the user
+     * 
+     * eg: http://localhost:8080/user/resetPassword
+     * 
+     * Request Body:
+     * {
+     * "email": "email@gmail.com",
+     * "password": "password"
+     * }
+     * 
+     * Response Body:
+     * {
+     * "message": "Password reset successfully!" or "The user does not exist."
+     * }
+     */
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestParam String email, @RequestParam String password) {
+        try {
+            Optional<User> userData = userRepository.findByEmail(email);
+
+            if (userData.isPresent()) {
+                String hashedPassword = MD5.getMd5(password);
+
+                userData.get().setPassword(hashedPassword);
+                userRepository.save(userData.get());
+
+                return new ResponseEntity<>("Password reset successfully!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("The user does not exist.", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
