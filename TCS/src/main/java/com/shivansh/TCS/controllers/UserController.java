@@ -190,6 +190,11 @@ public class UserController {
                 return new ResponseEntity<>("The user already exisits", HttpStatus.CONFLICT);
             }
 
+            // check if email is not of the domain bits-pilani
+            if (!user.getEmail().contains("bits-pilani.ac.in")) {
+                return new ResponseEntity<>("Please use your BITS email ID", HttpStatus.BAD_REQUEST);
+            }
+
             String encodedPass = MD5.getMd5(user.getPassword());
 
             User _user = userRepository.save(
