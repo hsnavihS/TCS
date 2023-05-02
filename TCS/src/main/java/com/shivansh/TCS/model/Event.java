@@ -3,6 +3,8 @@ package com.shivansh.TCS.model;
 import jakarta.persistence.*;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "events")
 public class Event {
@@ -30,10 +32,10 @@ public class Event {
     @Column(name = "importance", nullable = false)
     private Integer importance;
 
-    @ManyToMany(mappedBy = "events", cascade = { CascadeType.REMOVE })
+    @ManyToMany(mappedBy = "events", cascade = { CascadeType.PERSIST })
     List<User> people;
 
-    @ManyToMany(mappedBy = "events", cascade = { CascadeType.REMOVE })
+    @ManyToMany(mappedBy = "events", cascade = { CascadeType.PERSIST })
     List<Room> rooms;
 
     // constructors
@@ -41,7 +43,7 @@ public class Event {
     public Event() {
     }
 
-    public Event(Integer numPeople, Integer duration, Integer importance, Date dateTime) {
+    public Event(Date dateTime, Integer numPeople, Integer duration, Integer importance) {
         this.dateTime = dateTime;
         this.numPeople = numPeople;
         this.duration = duration;
@@ -96,6 +98,7 @@ public class Event {
         this.importance = importance;
     }
 
+    @JsonBackReference(value = "event_user")
     public List<User> getPeople() {
         return people;
     }
@@ -121,6 +124,7 @@ public class Event {
         people.clear();
     }
 
+    @JsonBackReference(value = "event_room")
     public List<Room> getRooms() {
         return rooms;
     }

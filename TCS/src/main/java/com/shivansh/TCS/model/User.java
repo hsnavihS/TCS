@@ -32,7 +32,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST })
     @JoinTable(name = "event_user", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     List<Event> events;
 
@@ -97,5 +97,9 @@ public class User {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public void addEvent(Event event) {
+        this.events.add(event);
     }
 }

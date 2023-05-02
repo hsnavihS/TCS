@@ -166,7 +166,7 @@ public class UserController {
      * 
      * Request Body:
      * {
-     * "name": "Ansh Goyal",
+     * "name": "Shivansh Shukla",
      * "email": "email@gmail.com"
      * "password": "password",
      * "phone": 9876543210,

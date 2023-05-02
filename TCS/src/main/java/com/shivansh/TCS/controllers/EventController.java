@@ -49,11 +49,17 @@ public class EventController {
      * "duration": 2,
      * "importance": 5,
      * "people": [1, 2, 3],
-     * "room": 1
+     * "room": [1, 2]
      * }
      * 
      * Response body:
-     * "Event created successfully"
+     * {
+     * "id": 1,
+     * "dateTime": "2021-04-20T12:00:00.000+00:00",
+     * "numPeople": 5,
+     * "duration": 2,
+     * "importance": 5
+     * }
      */
     @PostMapping("/create")
     public ResponseEntity<Object> createEvent(@RequestBody Map<String, Object> Body) {
@@ -65,7 +71,6 @@ public class EventController {
             Integer numPeople = (Integer) Body.get("numPeople");
             Integer duration = (Integer) Body.get("duration");
             Integer importance = (Integer) Body.get("importance");
-
             List<Integer> tempPeople = (List<Integer>) Body.get("people");
 
             List<Long> people = new ArrayList<>();
@@ -76,28 +81,41 @@ public class EventController {
             List<User> members = new ArrayList<>();
             List<Room> rooms = new ArrayList<>();
 
-            Integer tempRoom = (Integer) Body.get("room");
-            Long room = tempRoom.longValue();
+            List<Integer> tempRoom = (List<Integer>) Body.get("room");
+            List<Long> roomIDs = new ArrayList<>();
+            for (Integer i : tempRoom) {
+                roomIDs.add(i.longValue());
+            }
+
+            Event event = new Event(dateTime, numPeople, duration, importance);
+
+            eventRepository.save(event);
 
             for (Long id : people) {
                 Optional<User> user = userRepository.findById(id);
                 if (user.isPresent()) {
                     members.add(user.get());
+                    user.get().addEvent(event);
+                    userRepository.save(user.get());
                 } else {
                     return new ResponseEntity<>("User with id " + id + " not found",
                             HttpStatus.NOT_FOUND);
                 }
             }
 
-            Optional<Room> roomObj = roomRepository.findById(room);
-            if (roomObj.isPresent()) {
-                rooms.add(roomObj.get());
-            } else {
-                return new ResponseEntity<>("Room with id " + room + " not found",
-                        HttpStatus.NOT_FOUND);
-            }
+            eventRepository.save(event);
 
-            Event event = new Event(dateTime, numPeople, duration, importance, members, rooms);
+            for (Long room : roomIDs) {
+                Optional<Room> roomObj = roomRepository.findById(room);
+                if (roomObj.isPresent()) {
+                    rooms.add(roomObj.get());
+                    roomObj.get().addEvent(event);
+                    roomRepository.save(roomObj.get());
+                } else {
+                    return new ResponseEntity<>("Room with id " + room + " not found",
+                            HttpStatus.NOT_FOUND);
+                }
+            }
 
             eventRepository.save(event);
 

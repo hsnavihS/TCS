@@ -24,7 +24,7 @@ public class Room {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST })
     @JoinTable(name = "event_room", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
     List<Event> events;
 
