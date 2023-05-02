@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shivansh.TCS.mail.*;
@@ -91,12 +90,32 @@ public class EventController {
 
             eventRepository.save(event);
 
+            // Send email
+            String subject = "You've been added to an event!";
+
             for (Long id : people) {
                 Optional<User> user = userRepository.findById(id);
                 if (user.isPresent()) {
                     members.add(user.get());
                     user.get().addEvent(event);
                     userRepository.save(user.get());
+
+                    // send email
+                    String body = "Hello " + user.get().getName() + ",\n\n"
+                            + "Greetings from TCS. You have been added to an event.\n\n"
+                            + "The event details are as follows:\n"
+                            + "Date and time: " + event.getDateTime() + "\n"
+                            + "Importance (5: highest, 1: lowest): " + event.getImportance() + "\n"
+                            + "Duration: " + event.getDuration() + " hours" + "\n"
+                            + "Date and time: " + event.getDateTime() + "\n"
+                            + "Number of people: " + event.getNumPeople() +
+                            "\n\n"
+                            + "Regards,\n" + "Team TCS";
+
+                    EmailDetails emailDetails = new EmailDetails(user.get().getEmail(), body, subject, null);
+                    String status = emailService.sendSimpleMail(emailDetails);
+
+                    System.out.println("Email Status: " + status);
                 } else {
                     return new ResponseEntity<>("User with id " + id + " not found",
                             HttpStatus.NOT_FOUND);
@@ -295,67 +314,4 @@ public class EventController {
             return new ResponseEntity<>("Error getting event: " + e, HttpStatus.BAD_REQUEST);
         }
     }
-
-    // this method returns all events belonging to a user
-    /*
-     * GET events/user/{id}
-     * 
-     * Response body:
-     * [
-     * {
-     * "id": 1,
-     * "numPeople": 5,
-     * "duration": 2,
-     * "importance": 5,
-     * "datetime": "2021-04-20T12:00:00.000+00:00",
-     * "room": {
-     * "id": 1,
-     * "name": "Room 1",
-     * "capacity": 5,
-     * "location": "Location 1"
-     * },
-     * "people": [
-     * {
-     * "id": 1,
-     * "name": "User 1",
-     * "email": "
-     * 
-     * @gmail.com",
-     * "role": "ADMIN"
-     * },
-     * {
-     * "id": 2,
-     * "name": "User 2",
-     * "email": "
-     * 
-     * @gmail.com",
-     * "role": "USER"
-     * },
-     * {
-     * "id": 3,
-     * "name": "User 3",
-     * "email": "
-     * 
-     * @gmail.com",
-     * "role": "USER"
-     * }
-     * ]
-     * }
-     * ]
-     */
-    // @GetMapping("/user/{id}")
-    // public ResponseEntity<Object> getEventsByUser(@PathVariable Long id) {
-    // try {
-    // Optional<User> user = userRepository.findById(id);
-    // if (user.isPresent()) {
-    // List<Event> events = eventRepository.findByUser(user.get());
-    // return new ResponseEntity<>(events, HttpStatus.OK);
-    // } else {
-    // return new ResponseEntity<>("User with id " + id + " not found",
-    // HttpStatus.NOT_FOUND);
-    // }
-    // } catch (Exception e) {
-    // return new ResponseEntity<>("Error getting events", HttpStatus.BAD_REQUEST);
-    // }
-    // }
 }

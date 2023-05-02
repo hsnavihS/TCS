@@ -24,7 +24,7 @@ public class Room {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST })
+    @ManyToMany
     @JoinTable(name = "event_room", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
     List<Event> events;
 
@@ -79,5 +79,12 @@ public class Room {
 
     public void removeEvent(Event event) {
         this.events.remove(event);
+    }
+
+    @PreRemove
+    public void removeEvents() {
+        for (Event event : events) {
+            event.removeRoom(this);
+        }
     }
 }

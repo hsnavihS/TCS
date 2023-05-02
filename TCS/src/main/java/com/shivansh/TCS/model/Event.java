@@ -32,10 +32,10 @@ public class Event {
     @Column(name = "importance", nullable = false)
     private Integer importance;
 
-    @ManyToMany(mappedBy = "events", cascade = { CascadeType.PERSIST })
+    @ManyToMany(mappedBy = "events")
     List<User> people;
 
-    @ManyToMany(mappedBy = "events", cascade = { CascadeType.PERSIST })
+    @ManyToMany(mappedBy = "events")
     List<Room> rooms;
 
     // constructors
@@ -153,5 +153,11 @@ public class Event {
     public void addRoom(Room room) {
         rooms.add(room);
         room.getEvents().add(this);
+    }
+
+    @PreRemove
+    public void removeAssociationsWithUsersAndRooms() {
+        removeUsers();
+        removeRooms();
     }
 }

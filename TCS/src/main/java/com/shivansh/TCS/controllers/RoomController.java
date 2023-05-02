@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shivansh.TCS.mail.*;
 import com.shivansh.TCS.model.*;
-import com.shivansh.TCS.password.*;
 import com.shivansh.TCS.repository.*;
 
 @CrossOrigin
@@ -54,7 +52,7 @@ public class RoomController {
             roomRepository.save(room);
             return new ResponseEntity<>(room, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error creating room", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error creating room: " + e, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -101,7 +99,7 @@ public class RoomController {
             roomRepository.deleteById(id.longValue());
             return new ResponseEntity<>("Room deleted successfully", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error deleting room", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error deleting room: " + e, HttpStatus.BAD_REQUEST);
         }
     }
 }
