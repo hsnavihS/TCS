@@ -18,6 +18,9 @@ public class Event {
     @Column(name = "event_id")
     private Long id;
 
+    @Column(name = "event_title", nullable = false)
+    private String title = "unnamed event";
+
     @Column(name = "event_datetime", nullable = false)
     private Date dateTime;
 
@@ -43,15 +46,18 @@ public class Event {
     public Event() {
     }
 
-    public Event(Date dateTime, Integer numPeople, Integer duration, Integer importance) {
+    public Event(String title, Date dateTime, Integer numPeople, Integer duration, Integer importance) {
+        this.title = title;
         this.dateTime = dateTime;
         this.numPeople = numPeople;
         this.duration = duration;
         this.importance = importance;
     }
 
-    public Event(Date dateTime, Integer numPeople, Integer duration, Integer importance, List<User> people,
+    public Event(String title, Date dateTime, Integer numPeople, Integer duration, Integer importance,
+            List<User> people,
             List<Room> rooms) {
+        this.title = title;
         this.dateTime = dateTime;
         this.numPeople = numPeople;
         this.duration = duration;
@@ -159,5 +165,13 @@ public class Event {
     public void removeAssociationsWithUsersAndRooms() {
         removeUsers();
         removeRooms();
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

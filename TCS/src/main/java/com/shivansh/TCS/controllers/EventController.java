@@ -67,6 +67,7 @@ public class EventController {
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date dateTime = sf.parse(d);
 
+            String title = (String) Body.get("title");
             Integer numPeople = (Integer) Body.get("numPeople");
             Integer duration = (Integer) Body.get("duration");
             Integer importance = (Integer) Body.get("importance");
@@ -86,7 +87,7 @@ public class EventController {
                 roomIDs.add(i.longValue());
             }
 
-            Event event = new Event(dateTime, numPeople, duration, importance);
+            Event event = new Event(title, dateTime, numPeople, duration, importance);
 
             eventRepository.save(event);
 
@@ -104,6 +105,7 @@ public class EventController {
                     String body = "Hello " + user.get().getName() + ",\n\n"
                             + "Greetings from TCS. You have been added to an event.\n\n"
                             + "The event details are as follows:\n"
+                            + "Title: " + event.getTitle() + "\n"
                             + "Date and time: " + event.getDateTime() + "\n"
                             + "Importance (5: highest, 1: lowest): " + event.getImportance() + "\n"
                             + "Duration: " + event.getDuration() + " hours" + "\n"
